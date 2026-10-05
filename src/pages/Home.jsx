@@ -5,7 +5,7 @@ import UserCard from '../components/UserCard';
 import AddUserModal from '../components/AddUserModal';
 import VerifyCodeModal from '../components/VerifyCodeModal';
 import logo from '../assets/MYClinicLogo.jpg';
-import { Users, LogOut, Loader2, AlertCircle, RefreshCw, UserPlus, Ticket } from 'lucide-react';
+import { Users, LogOut, Loader2, AlertCircle, RefreshCw, UserPlus, Ticket, BarChart3 } from 'lucide-react';
 
 export default function Home() {
   const [users, setUsers] = useState([]);
@@ -52,10 +52,8 @@ export default function Home() {
       {/* ============ الشريط العلوي ============ */}
       <header className="bg-white/80 backdrop-blur-xl border-b border-gray-100 sticky top-0 z-20 px-8 py-4 flex items-center justify-between shadow-sm">
         
-        {/* ===== قسم الشعار (المحاذاة المصحّحة) ===== */}
+        {/* قسم الشعار */}
         <div className="flex items-center gap-3 group cursor-default">
-          
-          {/* الشعار */}
           <div className="relative flex-shrink-0">
             <div className="absolute inset-0 bg-[#D4AF37]/30 rounded-xl blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
             <img 
@@ -64,8 +62,6 @@ export default function Home() {
               className="relative w-11 h-11 object-contain rounded-xl ring-1 ring-gray-100 group-hover:ring-[#D4AF37]/40 transition-all duration-300" 
             />
           </div>
-
-          {/* النص */}
           <div className="flex flex-col justify-center">
             <h1 className="font-serif text-lg font-bold text-[#0B3B2D] tracking-wider leading-tight">
               MY CLINICS
@@ -102,6 +98,15 @@ export default function Home() {
               <Users className="w-4 h-4 text-[#D4AF37]" />
               <span>إجمالي المستخدمين: {users.length}</span>
             </div>
+
+            {/* ✅ زر التقارير الشهرية */}
+            <button
+              onClick={() => navigate('/reports')}
+              className="group flex items-center gap-2 bg-gradient-to-l from-[#D4AF37] to-[#AA8C2C] hover:shadow-lg hover:shadow-[#D4AF37]/30 text-[#041a14] px-4 py-2.5 rounded-xl text-xs font-bold transition-all duration-300 active:scale-95"
+            >
+              <BarChart3 className="w-4 h-4 group-hover:scale-110 transition-transform duration-300" />
+              <span>التقارير الشهرية</span>
+            </button>
 
             {/* زر التحقق من كود */}
             <button
@@ -180,7 +185,7 @@ export default function Home() {
         )}
       </main>
 
-      {/* ============ المودالات ============ */}
+      {/* المودالات */}
       <AddUserModal
         isOpen={showAddModal}
         onClose={() => setShowAddModal(false)}
@@ -192,7 +197,6 @@ export default function Home() {
         onClose={() => setShowVerifyModal(false)}
       />
 
-      {/* Keyframes */}
       <style>{`
         @keyframes fadeInUp {
           from { opacity: 0; transform: translateY(12px); }
