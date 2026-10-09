@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import API from '../services/api';
+import { useLocale } from '../localization/LocaleProvider';
 import { X, User, Mail, Lock, Percent, Loader2, AlertCircle, UserPlus, CheckCircle2 } from 'lucide-react';
 
 export default function AddUserModal({ isOpen, onClose, onSuccess }) {
@@ -14,12 +15,12 @@ export default function AddUserModal({ isOpen, onClose, onSuccess }) {
   const [error, setError] = useState('');
   const [fieldErrors, setFieldErrors] = useState({});
   const [success, setSuccess] = useState(false);
+  const { tr } = useLocale();
 
   if (!isOpen) return null;
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-    // امسح خطأ الحقل عند الكتابة
     if (fieldErrors[e.target.name]) {
       setFieldErrors({ ...fieldErrors, [e.target.name]: null });
     }
@@ -49,7 +50,6 @@ export default function AddUserModal({ isOpen, onClose, onSuccess }) {
         handleClose();
       }, 1200);
     } catch (err) {
-      // معالجة خطأ 422 (Validation)
       if (err.response?.status === 422 && err.response?.data?.errors) {
         setFieldErrors(err.response.data.errors);
         setError(err.response.data.message || 'تحقق من صحة البيانات');
@@ -77,7 +77,7 @@ export default function AddUserModal({ isOpen, onClose, onSuccess }) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-[fadeIn_0.2s_ease-out]"
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-[fadeIn_0.2s_ease-out]"
       onClick={handleClose}
       dir="rtl"
     >
@@ -85,18 +85,16 @@ export default function AddUserModal({ isOpen, onClose, onSuccess }) {
         className="relative bg-white rounded-3xl shadow-2xl max-w-md w-full overflow-hidden animate-[slideUp_0.3s_ease-out]"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* شريط علوي ذهبي */}
         <div className="absolute top-0 right-0 left-0 h-1 bg-gradient-to-l from-[#0B3B2D] via-[#D4AF37] to-[#0B3B2D]"></div>
 
-        {/* رأس المودال */}
         <div className="flex items-center justify-between p-6 pb-4">
           <div className="flex items-center gap-3">
             <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#0B3B2D] to-[#135c47] flex items-center justify-center shadow-sm">
               <UserPlus className="w-5 h-5 text-[#D4AF37]" />
             </div>
             <div>
-              <h2 className="text-base font-bold text-gray-800">إضافة مستخدم جديد</h2>
-              <p className="text-[11px] text-gray-400 mt-0.5">أدخل بيانات المستخدم المطلوبة</p>
+              <h2 className="text-base font-bold text-gray-800">{tr('addNewUser')}</h2>
+              <p className="text-[11px] text-gray-400 mt-0.5">{tr('addNewUserDesc')}</p>
             </div>
           </div>
           <button
@@ -107,19 +105,17 @@ export default function AddUserModal({ isOpen, onClose, onSuccess }) {
           </button>
         </div>
 
-        {/* جسم المودال */}
         {success ? (
           <div className="flex flex-col items-center justify-center py-12 px-6">
             <div className="w-16 h-16 rounded-full bg-green-50 flex items-center justify-center mb-4 animate-[scaleIn_0.3s_ease-out]">
               <CheckCircle2 className="w-8 h-8 text-green-500" />
             </div>
-            <h3 className="text-base font-bold text-gray-800 mb-1">تمت الإضافة بنجاح</h3>
-            <p className="text-xs text-gray-400">جاري تحديث القائمة...</p>
+            <h3 className="text-base font-bold text-gray-800 mb-1">{tr('userAddedSuccess')}</h3>
+            <p className="text-xs text-gray-400">{tr('updatingList')}</p>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="p-6 pt-2 space-y-4">
             
-            {/* رسالة الخطأ العامة */}
             {error && (
               <div className="bg-red-50 border border-red-100 text-red-600 px-3 py-2.5 rounded-xl text-xs flex items-center gap-2 animate-[shake_0.4s_ease-out]">
                 <AlertCircle className="w-4 h-4 flex-shrink-0" />
@@ -127,11 +123,10 @@ export default function AddUserModal({ isOpen, onClose, onSuccess }) {
               </div>
             )}
 
-            {/* الاسم الأول + الاسم الأخير */}
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <label className="block text-[11px] font-semibold text-gray-600 mb-1.5">
-                  الاسم الأول
+                  {tr('firstName')}
                 </label>
                 <div className="relative">
                   <User className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
@@ -141,7 +136,7 @@ export default function AddUserModal({ isOpen, onClose, onSuccess }) {
                     value={formData.first_name}
                     onChange={handleChange}
                     required
-                    placeholder="فريد"
+                    placeholder={tr('firstNamePlaceholder')}
                     className={`w-full bg-[#F8F9FA] border rounded-xl pr-9 pl-3 py-2.5 text-xs text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#0B3B2D]/20 focus:border-[#0B3B2D]/30 focus:bg-white transition-all ${
                       fieldErrors.first_name ? 'border-red-300 bg-red-50' : 'border-gray-200'
                     }`}
@@ -154,7 +149,7 @@ export default function AddUserModal({ isOpen, onClose, onSuccess }) {
 
               <div>
                 <label className="block text-[11px] font-semibold text-gray-600 mb-1.5">
-                  الاسم الأخير
+                  {tr('lastName')}
                 </label>
                 <div className="relative">
                   <User className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
@@ -164,7 +159,7 @@ export default function AddUserModal({ isOpen, onClose, onSuccess }) {
                     value={formData.last_name}
                     onChange={handleChange}
                     required
-                    placeholder="جماني"
+                    placeholder={tr('lastNamePlaceholder')}
                     className={`w-full bg-[#F8F9FA] border rounded-xl pr-9 pl-3 py-2.5 text-xs text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#0B3B2D]/20 focus:border-[#0B3B2D]/30 focus:bg-white transition-all ${
                       fieldErrors.last_name ? 'border-red-300 bg-red-50' : 'border-gray-200'
                     }`}
@@ -176,10 +171,9 @@ export default function AddUserModal({ isOpen, onClose, onSuccess }) {
               </div>
             </div>
 
-            {/* البريد الإلكتروني */}
             <div>
               <label className="block text-[11px] font-semibold text-gray-600 mb-1.5">
-                البريد الإلكتروني
+                {tr('emailLabel')}
               </label>
               <div className="relative">
                 <Mail className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
@@ -189,7 +183,7 @@ export default function AddUserModal({ isOpen, onClose, onSuccess }) {
                   value={formData.email}
                   onChange={handleChange}
                   required
-                  placeholder="user@example.com"
+                  placeholder={tr('emailPlaceholder')}
                   dir="ltr"
                   className={`w-full bg-[#F8F9FA] border rounded-xl pr-9 pl-3 py-2.5 text-xs text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#0B3B2D]/20 focus:border-[#0B3B2D]/30 focus:bg-white transition-all text-left ${
                     fieldErrors.email ? 'border-red-300 bg-red-50' : 'border-gray-200'
@@ -201,10 +195,9 @@ export default function AddUserModal({ isOpen, onClose, onSuccess }) {
               )}
             </div>
 
-            {/* كلمة المرور */}
             <div>
               <label className="block text-[11px] font-semibold text-gray-600 mb-1.5">
-                كلمة المرور
+                {tr('passwordLabel')}
               </label>
               <div className="relative">
                 <Lock className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
@@ -226,10 +219,9 @@ export default function AddUserModal({ isOpen, onClose, onSuccess }) {
               )}
             </div>
 
-            {/* الخصم الأقصى */}
             <div>
               <label className="block text-[11px] font-semibold text-gray-600 mb-1.5">
-                الخصم الأقصى (%)
+                {tr('maxDiscountPercent')}
               </label>
               <div className="relative">
                 <Percent className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
@@ -252,7 +244,6 @@ export default function AddUserModal({ isOpen, onClose, onSuccess }) {
               )}
             </div>
 
-            {/* أزرار التحكم */}
             <div className="flex gap-2 pt-2">
               <button
                 type="button"
@@ -260,7 +251,7 @@ export default function AddUserModal({ isOpen, onClose, onSuccess }) {
                 disabled={loading}
                 className="flex-1 py-2.5 rounded-xl text-xs font-semibold text-gray-600 bg-gray-100 hover:bg-gray-200 transition-colors disabled:opacity-50"
               >
-                إلغاء
+                {tr('cancel')}
               </button>
               <button
                 type="submit"
@@ -270,12 +261,12 @@ export default function AddUserModal({ isOpen, onClose, onSuccess }) {
                 {loading ? (
                   <>
                     <Loader2 className="w-4 h-4 animate-spin" />
-                    <span>جاري الإضافة...</span>
+                    <span>{tr('addingUser')}</span>
                   </>
                 ) : (
                   <>
                     <UserPlus className="w-4 h-4" />
-                    <span>إضافة المستخدم</span>
+                    <span>{tr('addUserBtn')}</span>
                   </>
                 )}
               </button>
